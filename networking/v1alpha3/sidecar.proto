@@ -491,6 +491,17 @@ message IstioIngressListener {
 
   reserved "localhost_client_tls";
   reserved 5, 6;
+
+  Mode mode = 7;
+
+  string server_certificate = 8;
+
+  string private_key = 9;
+
+}
+enum Mode {
+  SIDECAR = 0;
+  GATEWAY = 1;
 }
 
 // `IstioEgressListener` specifies the properties of an outbound traffic

@@ -6,7 +6,7 @@ layout: protoc-gen-docs
 generator: protoc-gen-docs
 schema: istio.networking.v1alpha3.Sidecar
 aliases: [/docs/reference/config/networking/v1alpha3/sidecar]
-number_of_entries: 7
+number_of_entries: 8
 ---
 <p><code>Sidecar</code> describes the configuration of the sidecar proxy that mediates
 inbound and outbound communication to the workload instance it is attached to. By
@@ -546,6 +546,33 @@ connections. Arbitrary IPs are not supported. Format should be one of <code>127.
 Yes
 </td>
 </tr>
+<tr id="IstioIngressListener-mode">
+<td><code>mode</code></td>
+<td><code><a href="#Mode">Mode</a></code></td>
+<td>
+</td>
+<td>
+No
+</td>
+</tr>
+<tr id="IstioIngressListener-server_certificate">
+<td><code>serverCertificate</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+<td>
+No
+</td>
+</tr>
+<tr id="IstioIngressListener-private_key">
+<td><code>privateKey</code></td>
+<td><code>string</code></td>
+<td>
+</td>
+<td>
+No
+</td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -750,6 +777,29 @@ service registry as well as those defined through <code>ServiceEntry</code> conf
 <p>Outbound traffic to unknown destinations will be allowed, in case
 there are no services or <code>ServiceEntry</code> configurations for the destination port.</p>
 
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<h2 id="Mode">Mode</h2>
+<section>
+<table class="enum-values">
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr id="Mode-SIDECAR">
+<td><code>SIDECAR</code></td>
+<td>
+</td>
+</tr>
+<tr id="Mode-GATEWAY">
+<td><code>GATEWAY</code></td>
+<td>
 </td>
 </tr>
 </tbody>

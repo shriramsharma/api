@@ -3305,6 +3305,11 @@ spec:
                       type: string
                     defaultEndpoint:
                       type: string
+                    mode:
+                      enum:
+                      - SIDECAR
+                      - GATEWAY
+                      type: string
                     port:
                       description: The port associated with the listener.
                       properties:
@@ -3320,6 +3325,10 @@ spec:
                         targetPort:
                           type: integer
                       type: object
+                    privateKey:
+                      type: string
+                    serverCertificate:
+                      type: string
                   type: object
                 type: array
               outboundTrafficPolicy:
@@ -3417,6 +3426,11 @@ spec:
                       type: string
                     defaultEndpoint:
                       type: string
+                    mode:
+                      enum:
+                      - SIDECAR
+                      - GATEWAY
+                      type: string
                     port:
                       description: The port associated with the listener.
                       properties:
@@ -3432,6 +3446,10 @@ spec:
                         targetPort:
                           type: integer
                       type: object
+                    privateKey:
+                      type: string
+                    serverCertificate:
+                      type: string
                   type: object
                 type: array
               outboundTrafficPolicy:
