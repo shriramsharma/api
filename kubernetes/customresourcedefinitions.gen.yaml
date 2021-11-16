@@ -3318,10 +3318,35 @@ spec:
                               items:
                                 type: string
                               type: array
+                            credentialName:
+                              type: string
+                            httpsRedirect:
+                              type: boolean
+                            maxProtocolVersion:
+                              description: 'Optional: Maximum TLS protocol version.'
+                              enum:
+                              - TLS_AUTO
+                              - TLSV1_0
+                              - TLSV1_1
+                              - TLSV1_2
+                              - TLSV1_3
+                              type: string
+                            minProtocolVersion:
+                              description: 'Optional: Minimum TLS protocol version.'
+                              enum:
+                              - TLS_AUTO
+                              - TLSV1_0
+                              - TLSV1_1
+                              - TLSV1_2
+                              - TLSV1_3
+                              type: string
                             mode:
                               enum:
+                              - PASSTHROUGH
                               - SIMPLE
                               - MUTUAL
+                              - AUTO_PASSTHROUGH
+                              - ISTIO_MUTUAL
                               type: string
                             privateKey:
                               description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
@@ -3329,6 +3354,18 @@ spec:
                             serverCertificate:
                               description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
                               type: string
+                            subjectAltNames:
+                              items:
+                                type: string
+                              type: array
+                            verifyCertificateHash:
+                              items:
+                                type: string
+                              type: array
+                            verifyCertificateSpki:
+                              items:
+                                type: string
+                              type: array
                           type: object
                         type:
                           enum:
@@ -3461,10 +3498,35 @@ spec:
                               items:
                                 type: string
                               type: array
+                            credentialName:
+                              type: string
+                            httpsRedirect:
+                              type: boolean
+                            maxProtocolVersion:
+                              description: 'Optional: Maximum TLS protocol version.'
+                              enum:
+                              - TLS_AUTO
+                              - TLSV1_0
+                              - TLSV1_1
+                              - TLSV1_2
+                              - TLSV1_3
+                              type: string
+                            minProtocolVersion:
+                              description: 'Optional: Minimum TLS protocol version.'
+                              enum:
+                              - TLS_AUTO
+                              - TLSV1_0
+                              - TLSV1_1
+                              - TLSV1_2
+                              - TLSV1_3
+                              type: string
                             mode:
                               enum:
+                              - PASSTHROUGH
                               - SIMPLE
                               - MUTUAL
+                              - AUTO_PASSTHROUGH
+                              - ISTIO_MUTUAL
                               type: string
                             privateKey:
                               description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
@@ -3472,6 +3534,18 @@ spec:
                             serverCertificate:
                               description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
                               type: string
+                            subjectAltNames:
+                              items:
+                                type: string
+                              type: array
+                            verifyCertificateHash:
+                              items:
+                                type: string
+                              type: array
+                            verifyCertificateSpki:
+                              items:
+                                type: string
+                              type: array
                           type: object
                         type:
                           enum:

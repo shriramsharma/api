@@ -6,7 +6,7 @@ layout: protoc-gen-docs
 generator: protoc-gen-docs
 schema: istio.networking.v1alpha3.Sidecar
 aliases: [/docs/reference/config/networking/v1alpha3/sidecar]
-number_of_entries: 12
+number_of_entries: 9
 ---
 <p><code>Sidecar</code> describes the configuration of the sidecar proxy that mediates
 inbound and outbound communication to the workload instance it is attached to. By
@@ -581,85 +581,8 @@ No
 </tr>
 <tr id="SecurityMode-tls">
 <td><code>tls</code></td>
-<td><code><a href="#TLSSettings">TLSSettings</a></code></td>
+<td><code><a href="https://istio.io/docs/reference/config/networking/gateway.html#ServerTLSSettings">ServerTLSSettings</a></code></td>
 <td>
-</td>
-<td>
-No
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-<h2 id="TLSSettings">TLSSettings</h2>
-<section>
-<table class="message-fields">
-<thead>
-<tr>
-<th>Field</th>
-<th>Type</th>
-<th>Description</th>
-<th>Required</th>
-</tr>
-</thead>
-<tbody>
-<tr id="TLSSettings-mode">
-<td><code>mode</code></td>
-<td><code><a href="#TLSSettings-TLSmode">TLSmode</a></code></td>
-<td>
-<p>Optional: Indicates whether connections to this port should be
-secured using TLS. The value of this field determines how TLS is
-enforced.</p>
-
-</td>
-<td>
-No
-</td>
-</tr>
-<tr id="TLSSettings-server_certificate">
-<td><code>serverCertificate</code></td>
-<td><code>string</code></td>
-<td>
-<p>REQUIRED if mode is <code>SIMPLE</code> or <code>MUTUAL</code>. The path to the file
-holding the server-side TLS certificate to use.</p>
-
-</td>
-<td>
-No
-</td>
-</tr>
-<tr id="TLSSettings-private_key">
-<td><code>privateKey</code></td>
-<td><code>string</code></td>
-<td>
-<p>REQUIRED if mode is <code>SIMPLE</code> or <code>MUTUAL</code>. The path to the file
-holding the server&rsquo;s private key.</p>
-
-</td>
-<td>
-No
-</td>
-</tr>
-<tr id="TLSSettings-ca_certificates">
-<td><code>caCertificates</code></td>
-<td><code>string</code></td>
-<td>
-<p>REQUIRED if mode is <code>MUTUAL</code>. The path to a file containing
-certificate authority certificates to use in verifying a presented
-client side certificate.</p>
-
-</td>
-<td>
-No
-</td>
-</tr>
-<tr id="TLSSettings-cipher_suites">
-<td><code>cipherSuites</code></td>
-<td><code>string[]</code></td>
-<td>
-<p>Optional: If specified, only support the specified cipher list.
-Otherwise default to the default cipher list supported by Envoy.</p>
-
 </td>
 <td>
 No
@@ -863,86 +786,6 @@ No
 <tr id="SecurityMode-Type-GATEWAY">
 <td><code>GATEWAY</code></td>
 <td>
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-<h2 id="TLSSettings-TLSmode">TLSSettings.TLSmode</h2>
-<section>
-<p>TLS modes enforced by the proxy</p>
-
-<table class="enum-values">
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr id="TLSSettings-TLSmode-SIMPLE">
-<td><code>SIMPLE</code></td>
-<td>
-<p>Secure connections with standard TLS semantics.</p>
-
-</td>
-</tr>
-<tr id="TLSSettings-TLSmode-MUTUAL">
-<td><code>MUTUAL</code></td>
-<td>
-<p>Secure connections to the downstream using mutual TLS by
-presenting server certificates for authentication.</p>
-
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-<h2 id="TLSSettings-TLSProtocol">TLSSettings.TLSProtocol</h2>
-<section>
-<p>TLS protocol versions.</p>
-
-<table class="enum-values">
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr id="TLSSettings-TLSProtocol-TLS_AUTO">
-<td><code>TLS_AUTO</code></td>
-<td>
-<p>Automatically choose the optimal TLS version.</p>
-
-</td>
-</tr>
-<tr id="TLSSettings-TLSProtocol-TLSV1_0">
-<td><code>TLSV1_0</code></td>
-<td>
-<p>TLS version 1.0</p>
-
-</td>
-</tr>
-<tr id="TLSSettings-TLSProtocol-TLSV1_1">
-<td><code>TLSV1_1</code></td>
-<td>
-<p>TLS version 1.1</p>
-
-</td>
-</tr>
-<tr id="TLSSettings-TLSProtocol-TLSV1_2">
-<td><code>TLSV1_2</code></td>
-<td>
-<p>TLS version 1.2</p>
-
-</td>
-</tr>
-<tr id="TLSSettings-TLSProtocol-TLSV1_3">
-<td><code>TLSV1_3</code></td>
-<td>
-<p>TLS version 1.3</p>
-
 </td>
 </tr>
 </tbody>
