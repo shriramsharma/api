@@ -74,22 +74,9 @@
             "type": "string"
           },
           "mode": {
-            "$ref": "#/components/schemas/istio.networking.v1beta1.Mode"
-          },
-          "serverCertificate": {
-            "type": "string"
-          },
-          "privateKey": {
-            "type": "string"
+            "$ref": "#/components/schemas/istio.networking.v1beta1.SecurityMode"
           }
         }
-      },
-      "istio.networking.v1beta1.Mode": {
-        "type": "string",
-        "enum": [
-          "SIDECAR",
-          "GATEWAY"
-        ]
       },
       "istio.networking.v1beta1.OutboundTrafficPolicy": {
         "description": "`OutboundTrafficPolicy` sets the default behavior of the sidecar for handling outbound traffic from the application. If your application uses one or more external services that are not known apriori, setting the policy to `ALLOW_ANY` will cause the sidecars to route any unknown traffic originating from the application to its requested destination. Users are strongly encouraged to use `ServiceEntry` configurations to explicitly declare any external dependencies, instead of using `ALLOW_ANY`, so that traffic to these services can be monitored.",
@@ -142,6 +129,24 @@
           }
         }
       },
+      "istio.networking.v1beta1.SecurityMode": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/istio.networking.v1beta1.SecurityMode.Type"
+          },
+          "tls": {
+            "$ref": "#/components/schemas/istio.networking.v1beta1.TLSSettings"
+          }
+        }
+      },
+      "istio.networking.v1beta1.SecurityMode.Type": {
+        "type": "string",
+        "enum": [
+          "DEFAULT",
+          "GATEWAY"
+        ]
+      },
       "istio.networking.v1beta1.Sidecar": {
         "description": "`Sidecar` describes the configuration of the sidecar proxy that mediates inbound and outbound communication of the workload instance to which it is attached.",
         "type": "object",
@@ -167,6 +172,41 @@
             "$ref": "#/components/schemas/istio.networking.v1beta1.OutboundTrafficPolicy"
           }
         }
+      },
+      "istio.networking.v1beta1.TLSSettings": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "$ref": "#/components/schemas/istio.networking.v1beta1.TLSSettings.TLSmode"
+          },
+          "serverCertificate": {
+            "description": "REQUIRED if mode is `SIMPLE` or `MUTUAL`. The path to the file holding the server-side TLS certificate to use.",
+            "type": "string"
+          },
+          "privateKey": {
+            "description": "REQUIRED if mode is `SIMPLE` or `MUTUAL`. The path to the file holding the server's private key.",
+            "type": "string"
+          },
+          "caCertificates": {
+            "description": "REQUIRED if mode is `MUTUAL`. The path to a file containing certificate authority certificates to use in verifying a presented client side certificate.",
+            "type": "string"
+          },
+          "cipherSuites": {
+            "description": "Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "istio.networking.v1beta1.TLSSettings.TLSmode": {
+        "description": "TLS modes enforced by the proxy",
+        "type": "string",
+        "enum": [
+          "SIMPLE",
+          "MUTUAL"
+        ]
       },
       "istio.networking.v1beta1.WorkloadSelector": {
         "description": "`WorkloadSelector` specifies the criteria used to determine if the `Gateway`, `Sidecar`, `EnvoyFilter`, or `ServiceEntry` configuration can be applied to a proxy. The matching criteria includes the metadata associated with a proxy, workload instance info such as labels attached to the pod/VM, or any other info that the proxy provides to Istio during the initial handshake. If multiple conditions are specified, all conditions need to match in order for the workload instance to be selected. Currently, only label based selection mechanism is supported.",

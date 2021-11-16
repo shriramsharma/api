@@ -492,17 +492,72 @@ message IstioIngressListener {
   reserved "localhost_client_tls";
   reserved 5, 6;
 
-  Mode mode = 7;
-
-  string server_certificate = 8;
-
-  string private_key = 9;
+  SecurityMode mode = 7;
 
 }
-enum Mode {
-  SIDECAR = 0;
-  GATEWAY = 1;
+
+message SecurityMode {
+  enum Type {
+    DEFAULT = 0;
+    GATEWAY = 1;
+  }
+  Type type = 2;
+  TLSSettings tls = 3;
 }
+
+message TLSSettings {
+  // TLS modes enforced by the proxy
+  enum TLSmode {
+    // Secure connections with standard TLS semantics.
+    SIMPLE = 0;
+
+    // Secure connections to the downstream using mutual TLS by
+    // presenting server certificates for authentication.
+    MUTUAL = 1;
+  };
+
+  // Optional: Indicates whether connections to this port should be
+  // secured using TLS. The value of this field determines how TLS is
+  // enforced.
+  TLSmode mode = 2;
+
+  // REQUIRED if mode is `SIMPLE` or `MUTUAL`. The path to the file
+  // holding the server-side TLS certificate to use.
+  string server_certificate = 3;
+
+  // REQUIRED if mode is `SIMPLE` or `MUTUAL`. The path to the file
+  // holding the server's private key.
+  string private_key = 4;
+
+  // REQUIRED if mode is `MUTUAL`. The path to a file containing
+  // certificate authority certificates to use in verifying a presented
+  // client side certificate.
+  string ca_certificates = 5;
+
+  // TLS protocol versions.
+  enum TLSProtocol {
+    // Automatically choose the optimal TLS version.
+    TLS_AUTO = 0;
+
+    // TLS version 1.0
+    TLSV1_0 = 1;
+
+    // TLS version 1.1
+    TLSV1_1 = 2;
+
+    // TLS version 1.2
+    TLSV1_2 = 3;
+
+    // TLS version 1.3
+    TLSV1_3 = 4;
+  }
+
+  // Optional: If specified, only support the specified cipher list.
+  // Otherwise default to the default cipher list supported by Envoy.
+  repeated string cipher_suites = 9;
+}
+
+
 
 // `IstioEgressListener` specifies the properties of an outbound traffic
 // listener on the sidecar proxy attached to a workload instance.

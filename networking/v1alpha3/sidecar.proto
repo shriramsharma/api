@@ -497,14 +497,15 @@ message IstioIngressListener {
 }
 
 message SecurityMode {
-  enum type {
+  enum Type {
     DEFAULT = 0;
     GATEWAY = 1;
   }
-  ServerTLSSettings tls = 2;
+  Type type = 2;
+  TLSSettings tls = 3;
 }
 
-message ServerTLSSettings {
+message TLSSettings {
   // TLS modes enforced by the proxy
   enum TLSmode {
     // Secure connections with standard TLS semantics.

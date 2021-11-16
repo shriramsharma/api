@@ -3306,10 +3306,36 @@ spec:
                     defaultEndpoint:
                       type: string
                     mode:
-                      enum:
-                      - SIDECAR
-                      - GATEWAY
-                      type: string
+                      properties:
+                        tls:
+                          properties:
+                            caCertificates:
+                              description: REQUIRED if mode is `MUTUAL`.
+                              type: string
+                            cipherSuites:
+                              description: 'Optional: If specified, only support the
+                                specified cipher list.'
+                              items:
+                                type: string
+                              type: array
+                            mode:
+                              enum:
+                              - SIMPLE
+                              - MUTUAL
+                              type: string
+                            privateKey:
+                              description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                              type: string
+                            serverCertificate:
+                              description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                              type: string
+                          type: object
+                        type:
+                          enum:
+                          - DEFAULT
+                          - GATEWAY
+                          type: string
+                      type: object
                     port:
                       description: The port associated with the listener.
                       properties:
@@ -3325,10 +3351,6 @@ spec:
                         targetPort:
                           type: integer
                       type: object
-                    privateKey:
-                      type: string
-                    serverCertificate:
-                      type: string
                   type: object
                 type: array
               outboundTrafficPolicy:
@@ -3427,10 +3449,36 @@ spec:
                     defaultEndpoint:
                       type: string
                     mode:
-                      enum:
-                      - SIDECAR
-                      - GATEWAY
-                      type: string
+                      properties:
+                        tls:
+                          properties:
+                            caCertificates:
+                              description: REQUIRED if mode is `MUTUAL`.
+                              type: string
+                            cipherSuites:
+                              description: 'Optional: If specified, only support the
+                                specified cipher list.'
+                              items:
+                                type: string
+                              type: array
+                            mode:
+                              enum:
+                              - SIMPLE
+                              - MUTUAL
+                              type: string
+                            privateKey:
+                              description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                              type: string
+                            serverCertificate:
+                              description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                              type: string
+                          type: object
+                        type:
+                          enum:
+                          - DEFAULT
+                          - GATEWAY
+                          type: string
+                      type: object
                     port:
                       description: The port associated with the listener.
                       properties:
@@ -3446,10 +3494,6 @@ spec:
                         targetPort:
                           type: integer
                       type: object
-                    privateKey:
-                      type: string
-                    serverCertificate:
-                      type: string
                   type: object
                 type: array
               outboundTrafficPolicy:

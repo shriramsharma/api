@@ -401,31 +401,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Mode int32
-
-const (
-	Mode_SIDECAR Mode = 0
-	Mode_GATEWAY Mode = 1
-)
-
-var Mode_name = map[int32]string{
-	0: "SIDECAR",
-	1: "GATEWAY",
-}
-
-var Mode_value = map[string]int32{
-	"SIDECAR": 0,
-	"GATEWAY": 1,
-}
-
-func (x Mode) String() string {
-	return proto.EnumName(Mode_name, int32(x))
-}
-
-func (Mode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_b5c11342f04ad3d1, []int{0}
-}
-
 // `CaptureMode` describes how traffic to a listener is expected to be
 // captured. Applicable only when the listener is bound to an IP.
 type CaptureMode int32
@@ -460,7 +435,101 @@ func (x CaptureMode) String() string {
 }
 
 func (CaptureMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_b5c11342f04ad3d1, []int{1}
+	return fileDescriptor_b5c11342f04ad3d1, []int{0}
+}
+
+type SecurityMode_Type int32
+
+const (
+	SecurityMode_DEFAULT SecurityMode_Type = 0
+	SecurityMode_GATEWAY SecurityMode_Type = 1
+)
+
+var SecurityMode_Type_name = map[int32]string{
+	0: "DEFAULT",
+	1: "GATEWAY",
+}
+
+var SecurityMode_Type_value = map[string]int32{
+	"DEFAULT": 0,
+	"GATEWAY": 1,
+}
+
+func (x SecurityMode_Type) String() string {
+	return proto.EnumName(SecurityMode_Type_name, int32(x))
+}
+
+func (SecurityMode_Type) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_b5c11342f04ad3d1, []int{2, 0}
+}
+
+// TLS modes enforced by the proxy
+type TLSSettings_TLSmode int32
+
+const (
+	// Secure connections with standard TLS semantics.
+	TLSSettings_SIMPLE TLSSettings_TLSmode = 0
+	// Secure connections to the downstream using mutual TLS by
+	// presenting server certificates for authentication.
+	TLSSettings_MUTUAL TLSSettings_TLSmode = 1
+)
+
+var TLSSettings_TLSmode_name = map[int32]string{
+	0: "SIMPLE",
+	1: "MUTUAL",
+}
+
+var TLSSettings_TLSmode_value = map[string]int32{
+	"SIMPLE": 0,
+	"MUTUAL": 1,
+}
+
+func (x TLSSettings_TLSmode) String() string {
+	return proto.EnumName(TLSSettings_TLSmode_name, int32(x))
+}
+
+func (TLSSettings_TLSmode) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_b5c11342f04ad3d1, []int{3, 0}
+}
+
+// TLS protocol versions.
+type TLSSettings_TLSProtocol int32
+
+const (
+	// Automatically choose the optimal TLS version.
+	TLSSettings_TLS_AUTO TLSSettings_TLSProtocol = 0
+	// TLS version 1.0
+	TLSSettings_TLSV1_0 TLSSettings_TLSProtocol = 1
+	// TLS version 1.1
+	TLSSettings_TLSV1_1 TLSSettings_TLSProtocol = 2
+	// TLS version 1.2
+	TLSSettings_TLSV1_2 TLSSettings_TLSProtocol = 3
+	// TLS version 1.3
+	TLSSettings_TLSV1_3 TLSSettings_TLSProtocol = 4
+)
+
+var TLSSettings_TLSProtocol_name = map[int32]string{
+	0: "TLS_AUTO",
+	1: "TLSV1_0",
+	2: "TLSV1_1",
+	3: "TLSV1_2",
+	4: "TLSV1_3",
+}
+
+var TLSSettings_TLSProtocol_value = map[string]int32{
+	"TLS_AUTO": 0,
+	"TLSV1_0":  1,
+	"TLSV1_1":  2,
+	"TLSV1_2":  3,
+	"TLSV1_3":  4,
+}
+
+func (x TLSSettings_TLSProtocol) String() string {
+	return proto.EnumName(TLSSettings_TLSProtocol_name, int32(x))
+}
+
+func (TLSSettings_TLSProtocol) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_b5c11342f04ad3d1, []int{3, 1}
 }
 
 type OutboundTrafficPolicy_Mode int32
@@ -489,7 +558,7 @@ func (x OutboundTrafficPolicy_Mode) String() string {
 }
 
 func (OutboundTrafficPolicy_Mode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_b5c11342f04ad3d1, []int{4, 0}
+	return fileDescriptor_b5c11342f04ad3d1, []int{6, 0}
 }
 
 // `Sidecar` describes the configuration of the sidecar proxy that mediates
@@ -629,13 +698,11 @@ type IstioIngressListener struct {
 	// or Unix domain socket where the application workload instance is listening for
 	// connections. Arbitrary IPs are not supported. Format should be one of `127.0.0.1:PORT`, `0.0.0.0:PORT`
 	// (which will forward to the instance IP), or `unix:///path/to/socket`
-	DefaultEndpoint      string   `protobuf:"bytes,4,opt,name=default_endpoint,json=defaultEndpoint,proto3" json:"default_endpoint,omitempty"`
-	Mode                 Mode     `protobuf:"varint,7,opt,name=mode,proto3,enum=istio.networking.v1alpha3.Mode" json:"mode,omitempty"`
-	ServerCertificate    string   `protobuf:"bytes,8,opt,name=server_certificate,json=serverCertificate,proto3" json:"server_certificate,omitempty"`
-	PrivateKey           string   `protobuf:"bytes,9,opt,name=private_key,json=privateKey,proto3" json:"private_key,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	DefaultEndpoint      string        `protobuf:"bytes,4,opt,name=default_endpoint,json=defaultEndpoint,proto3" json:"default_endpoint,omitempty"`
+	Mode                 *SecurityMode `protobuf:"bytes,7,opt,name=mode,proto3" json:"mode,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
 }
 
 func (m *IstioIngressListener) Reset()         { *m = IstioIngressListener{} }
@@ -699,25 +766,157 @@ func (m *IstioIngressListener) GetDefaultEndpoint() string {
 	return ""
 }
 
-func (m *IstioIngressListener) GetMode() Mode {
+func (m *IstioIngressListener) GetMode() *SecurityMode {
 	if m != nil {
 		return m.Mode
 	}
-	return Mode_SIDECAR
+	return nil
 }
 
-func (m *IstioIngressListener) GetServerCertificate() string {
+type SecurityMode struct {
+	Type                 SecurityMode_Type `protobuf:"varint,2,opt,name=type,proto3,enum=istio.networking.v1alpha3.SecurityMode_Type" json:"type,omitempty"`
+	Tls                  *TLSSettings      `protobuf:"bytes,3,opt,name=tls,proto3" json:"tls,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *SecurityMode) Reset()         { *m = SecurityMode{} }
+func (m *SecurityMode) String() string { return proto.CompactTextString(m) }
+func (*SecurityMode) ProtoMessage()    {}
+func (*SecurityMode) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c11342f04ad3d1, []int{2}
+}
+func (m *SecurityMode) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SecurityMode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SecurityMode.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SecurityMode) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SecurityMode.Merge(m, src)
+}
+func (m *SecurityMode) XXX_Size() int {
+	return m.Size()
+}
+func (m *SecurityMode) XXX_DiscardUnknown() {
+	xxx_messageInfo_SecurityMode.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SecurityMode proto.InternalMessageInfo
+
+func (m *SecurityMode) GetType() SecurityMode_Type {
+	if m != nil {
+		return m.Type
+	}
+	return SecurityMode_DEFAULT
+}
+
+func (m *SecurityMode) GetTls() *TLSSettings {
+	if m != nil {
+		return m.Tls
+	}
+	return nil
+}
+
+type TLSSettings struct {
+	// Optional: Indicates whether connections to this port should be
+	// secured using TLS. The value of this field determines how TLS is
+	// enforced.
+	Mode TLSSettings_TLSmode `protobuf:"varint,2,opt,name=mode,proto3,enum=istio.networking.v1alpha3.TLSSettings_TLSmode" json:"mode,omitempty"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`. The path to the file
+	// holding the server-side TLS certificate to use.
+	ServerCertificate string `protobuf:"bytes,3,opt,name=server_certificate,json=serverCertificate,proto3" json:"server_certificate,omitempty"`
+	// REQUIRED if mode is `SIMPLE` or `MUTUAL`. The path to the file
+	// holding the server's private key.
+	PrivateKey string `protobuf:"bytes,4,opt,name=private_key,json=privateKey,proto3" json:"private_key,omitempty"`
+	// REQUIRED if mode is `MUTUAL`. The path to a file containing
+	// certificate authority certificates to use in verifying a presented
+	// client side certificate.
+	CaCertificates string `protobuf:"bytes,5,opt,name=ca_certificates,json=caCertificates,proto3" json:"ca_certificates,omitempty"`
+	// Optional: If specified, only support the specified cipher list.
+	// Otherwise default to the default cipher list supported by Envoy.
+	CipherSuites         []string `protobuf:"bytes,9,rep,name=cipher_suites,json=cipherSuites,proto3" json:"cipher_suites,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TLSSettings) Reset()         { *m = TLSSettings{} }
+func (m *TLSSettings) String() string { return proto.CompactTextString(m) }
+func (*TLSSettings) ProtoMessage()    {}
+func (*TLSSettings) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c11342f04ad3d1, []int{3}
+}
+func (m *TLSSettings) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TLSSettings) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TLSSettings.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TLSSettings) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TLSSettings.Merge(m, src)
+}
+func (m *TLSSettings) XXX_Size() int {
+	return m.Size()
+}
+func (m *TLSSettings) XXX_DiscardUnknown() {
+	xxx_messageInfo_TLSSettings.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TLSSettings proto.InternalMessageInfo
+
+func (m *TLSSettings) GetMode() TLSSettings_TLSmode {
+	if m != nil {
+		return m.Mode
+	}
+	return TLSSettings_SIMPLE
+}
+
+func (m *TLSSettings) GetServerCertificate() string {
 	if m != nil {
 		return m.ServerCertificate
 	}
 	return ""
 }
 
-func (m *IstioIngressListener) GetPrivateKey() string {
+func (m *TLSSettings) GetPrivateKey() string {
 	if m != nil {
 		return m.PrivateKey
 	}
 	return ""
+}
+
+func (m *TLSSettings) GetCaCertificates() string {
+	if m != nil {
+		return m.CaCertificates
+	}
+	return ""
+}
+
+func (m *TLSSettings) GetCipherSuites() []string {
+	if m != nil {
+		return m.CipherSuites
+	}
+	return nil
 }
 
 // `IstioEgressListener` specifies the properties of an outbound traffic
@@ -782,7 +981,7 @@ func (m *IstioEgressListener) Reset()         { *m = IstioEgressListener{} }
 func (m *IstioEgressListener) String() string { return proto.CompactTextString(m) }
 func (*IstioEgressListener) ProtoMessage()    {}
 func (*IstioEgressListener) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c11342f04ad3d1, []int{2}
+	return fileDescriptor_b5c11342f04ad3d1, []int{4}
 }
 func (m *IstioEgressListener) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -863,7 +1062,7 @@ func (m *WorkloadSelector) Reset()         { *m = WorkloadSelector{} }
 func (m *WorkloadSelector) String() string { return proto.CompactTextString(m) }
 func (*WorkloadSelector) ProtoMessage()    {}
 func (*WorkloadSelector) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c11342f04ad3d1, []int{3}
+	return fileDescriptor_b5c11342f04ad3d1, []int{5}
 }
 func (m *WorkloadSelector) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -934,7 +1133,7 @@ func (m *OutboundTrafficPolicy) Reset()         { *m = OutboundTrafficPolicy{} }
 func (m *OutboundTrafficPolicy) String() string { return proto.CompactTextString(m) }
 func (*OutboundTrafficPolicy) ProtoMessage()    {}
 func (*OutboundTrafficPolicy) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c11342f04ad3d1, []int{4}
+	return fileDescriptor_b5c11342f04ad3d1, []int{6}
 }
 func (m *OutboundTrafficPolicy) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -978,11 +1177,15 @@ func (m *OutboundTrafficPolicy) GetEgressProxy() *Destination {
 }
 
 func init() {
-	proto.RegisterEnum("istio.networking.v1alpha3.Mode", Mode_name, Mode_value)
 	proto.RegisterEnum("istio.networking.v1alpha3.CaptureMode", CaptureMode_name, CaptureMode_value)
+	proto.RegisterEnum("istio.networking.v1alpha3.SecurityMode_Type", SecurityMode_Type_name, SecurityMode_Type_value)
+	proto.RegisterEnum("istio.networking.v1alpha3.TLSSettings_TLSmode", TLSSettings_TLSmode_name, TLSSettings_TLSmode_value)
+	proto.RegisterEnum("istio.networking.v1alpha3.TLSSettings_TLSProtocol", TLSSettings_TLSProtocol_name, TLSSettings_TLSProtocol_value)
 	proto.RegisterEnum("istio.networking.v1alpha3.OutboundTrafficPolicy_Mode", OutboundTrafficPolicy_Mode_name, OutboundTrafficPolicy_Mode_value)
 	proto.RegisterType((*Sidecar)(nil), "istio.networking.v1alpha3.Sidecar")
 	proto.RegisterType((*IstioIngressListener)(nil), "istio.networking.v1alpha3.IstioIngressListener")
+	proto.RegisterType((*SecurityMode)(nil), "istio.networking.v1alpha3.SecurityMode")
+	proto.RegisterType((*TLSSettings)(nil), "istio.networking.v1alpha3.TLSSettings")
 	proto.RegisterType((*IstioEgressListener)(nil), "istio.networking.v1alpha3.IstioEgressListener")
 	proto.RegisterType((*WorkloadSelector)(nil), "istio.networking.v1alpha3.WorkloadSelector")
 	proto.RegisterMapType((map[string]string)(nil), "istio.networking.v1alpha3.WorkloadSelector.LabelsEntry")
@@ -992,55 +1195,66 @@ func init() {
 func init() { proto.RegisterFile("networking/v1alpha3/sidecar.proto", fileDescriptor_b5c11342f04ad3d1) }
 
 var fileDescriptor_b5c11342f04ad3d1 = []byte{
-	// 757 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xcd, 0x72, 0xeb, 0x34,
-	0x14, 0xae, 0x12, 0x37, 0x3f, 0x72, 0x0b, 0xae, 0x68, 0x07, 0x93, 0x45, 0x1b, 0xb2, 0x60, 0x02,
-	0x0c, 0x0e, 0xa4, 0xc3, 0x40, 0xd9, 0xb9, 0xad, 0xdb, 0x71, 0x09, 0x49, 0xc6, 0x49, 0xa7, 0x94,
-	0x8d, 0x47, 0xb1, 0x95, 0x44, 0x53, 0x63, 0x79, 0x64, 0x25, 0x25, 0x6f, 0xc0, 0x83, 0xf0, 0x30,
-	0x2c, 0xd9, 0xb1, 0xbd, 0x93, 0xcd, 0x7d, 0x84, 0xbb, 0xbd, 0x63, 0x59, 0xfd, 0x9d, 0x34, 0x77,
-	0xba, 0xb9, 0x3b, 0x4b, 0xe7, 0xfb, 0x3e, 0x9d, 0xf3, 0x1d, 0x1d, 0x0b, 0x7e, 0x19, 0x13, 0x71,
-	0xcb, 0xf8, 0x0d, 0x8d, 0x27, 0xad, 0xf9, 0x0f, 0x38, 0x4a, 0xa6, 0xf8, 0xb0, 0x95, 0xd2, 0x90,
-	0x04, 0x98, 0x5b, 0x09, 0x67, 0x82, 0xa1, 0x2f, 0x68, 0x2a, 0x28, 0xb3, 0x1e, 0x80, 0xd6, 0x1d,
-	0xb0, 0x76, 0x30, 0x61, 0x6c, 0x12, 0x91, 0x16, 0x4e, 0x68, 0x6b, 0x4c, 0x49, 0x14, 0xfa, 0x23,
-	0x32, 0xc5, 0x73, 0xca, 0x14, 0xb7, 0xb6, 0x52, 0x7e, 0x82, 0x05, 0xb9, 0xc5, 0x0b, 0x05, 0xf9,
-	0x7a, 0x15, 0x64, 0x4e, 0xb9, 0x98, 0xe1, 0xc8, 0x4f, 0x09, 0x9f, 0xd3, 0x80, 0xe4, 0xd0, 0xc6,
-	0xbb, 0x02, 0x2c, 0x0f, 0xf2, 0xdc, 0xd0, 0xef, 0x70, 0x27, 0x63, 0x45, 0x0c, 0x87, 0x7e, 0x4a,
-	0x22, 0x12, 0x08, 0xc6, 0x4d, 0x50, 0x07, 0x4d, 0xbd, 0xfd, 0xad, 0xf5, 0x62, 0xc6, 0xd6, 0x95,
-	0xe2, 0x0c, 0x14, 0xc5, 0x33, 0x6e, 0x9f, 0xed, 0x20, 0x17, 0x96, 0x69, 0x3c, 0xe1, 0x24, 0x4d,
-	0xcd, 0x42, 0xbd, 0xd8, 0xd4, 0xdb, 0xad, 0x35, 0x7a, 0x6e, 0x16, 0x71, 0x73, 0x78, 0x87, 0xa6,
-	0x82, 0xc4, 0x84, 0x7b, 0x77, 0x7c, 0x74, 0x06, 0x4b, 0x24, 0x57, 0x2a, 0x4a, 0x25, 0xeb, 0x43,
-	0x4a, 0xce, 0x53, 0x21, 0xc5, 0x46, 0x53, 0xf8, 0x39, 0x9b, 0x89, 0x11, 0x9b, 0xc5, 0xa1, 0x2f,
-	0x38, 0x1e, 0x8f, 0x69, 0xe0, 0x27, 0x2c, 0xa2, 0xc1, 0xc2, 0xd4, 0x64, 0xc9, 0xdf, 0xaf, 0x11,
-	0xee, 0x29, 0xe6, 0x30, 0x27, 0xf6, 0x25, 0xcf, 0xdb, 0x63, 0xab, 0xb6, 0x2f, 0xb4, 0xca, 0xa6,
-	0x51, 0xba, 0xd0, 0x2a, 0x25, 0xa3, 0xec, 0x55, 0x23, 0x16, 0xe0, 0x68, 0xca, 0x52, 0xd1, 0xf8,
-	0xbb, 0x08, 0x77, 0x57, 0x95, 0x8a, 0x8e, 0xa0, 0x96, 0x30, 0x2e, 0x94, 0xf3, 0x07, 0x6b, 0xd2,
-	0xe8, 0x33, 0x2e, 0x8e, 0xb5, 0xa5, 0x0d, 0x0a, 0x9e, 0xa4, 0x20, 0x04, 0xb5, 0x11, 0x8d, 0x43,
-	0xb3, 0x50, 0x07, 0xcd, 0xaa, 0x27, 0xbf, 0x91, 0x0b, 0xb7, 0x02, 0x9c, 0x88, 0x19, 0x27, 0xfe,
-	0x9f, 0x2c, 0x24, 0x66, 0xb1, 0x0e, 0x9a, 0x9f, 0xb4, 0xbf, 0x5a, 0x23, 0x7b, 0x92, 0xc3, 0x7f,
-	0x63, 0x21, 0xf1, 0xf4, 0xe0, 0x61, 0x81, 0x5a, 0xd0, 0x08, 0xc9, 0x18, 0xcf, 0x22, 0xe1, 0x93,
-	0x38, 0x4c, 0x18, 0x8d, 0x85, 0x34, 0xab, 0xaa, 0x92, 0xf8, 0x54, 0x45, 0x1d, 0x15, 0x44, 0x87,
-	0x50, 0x93, 0x67, 0x96, 0xe5, 0x99, 0xeb, 0x4a, 0x91, 0x87, 0x49, 0x30, 0xfa, 0x0e, 0xa2, 0xec,
-	0x8e, 0x12, 0xee, 0x07, 0x84, 0x0b, 0x3a, 0xa6, 0x01, 0x16, 0xc4, 0xac, 0xc8, 0x92, 0x76, 0xf2,
-	0xc8, 0xc9, 0x43, 0x00, 0x1d, 0x40, 0x3d, 0xe1, 0x74, 0x8e, 0x05, 0xf1, 0x6f, 0xc8, 0xc2, 0xac,
-	0x4a, 0x1c, 0x54, 0x5b, 0xbf, 0x92, 0xa7, 0xfe, 0xef, 0xde, 0xfb, 0xef, 0x07, 0x11, 0x25, 0xb1,
-	0xf0, 0x45, 0x94, 0x36, 0xde, 0x02, 0xf8, 0xd9, 0x8a, 0xbb, 0x92, 0xa5, 0xff, 0x8a, 0x4e, 0x7c,
-	0x9c, 0x1e, 0xd4, 0xe0, 0x66, 0x96, 0x7e, 0x6a, 0x6a, 0xf5, 0xe2, 0xbd, 0xf1, 0xf9, 0xd6, 0x4b,
-	0x95, 0x2a, 0x37, 0xb3, 0x4a, 0xff, 0x01, 0xd0, 0x78, 0x3e, 0xaf, 0xe8, 0x12, 0x96, 0x22, 0x3c,
-	0x22, 0x51, 0x6a, 0x02, 0x39, 0x52, 0x3f, 0xbd, 0x62, 0xd8, 0xad, 0x8e, 0x64, 0x3a, 0xb1, 0xe0,
-	0x0b, 0x95, 0x8c, 0x12, 0xab, 0x1d, 0x41, 0xfd, 0x51, 0x10, 0x19, 0xb0, 0x98, 0xf5, 0x07, 0x48,
-	0x5b, 0xb2, 0x4f, 0xb4, 0x0b, 0x37, 0xe7, 0x38, 0x9a, 0x11, 0x65, 0x55, 0xbe, 0xf8, 0xa5, 0xf0,
-	0x33, 0x68, 0xfc, 0x0f, 0xe0, 0xde, 0xca, 0x19, 0x43, 0xae, 0xba, 0x51, 0x40, 0x3a, 0xf8, 0xe3,
-	0x6b, 0x67, 0xf4, 0xf1, 0x3d, 0x73, 0xe1, 0x56, 0xfe, 0x2f, 0xf0, 0x13, 0xce, 0xfe, 0x5a, 0xc8,
-	0x2c, 0xf4, 0xb5, 0x4d, 0x39, 0x25, 0xa9, 0xa0, 0x31, 0x16, 0x94, 0xc5, 0x9e, 0x9e, 0x73, 0xfb,
-	0x19, 0xb5, 0xd1, 0x84, 0x9a, 0x6c, 0xce, 0x0e, 0xdc, 0xf6, 0x9c, 0x73, 0x77, 0x30, 0xf4, 0xae,
-	0xfd, 0x5e, 0xb7, 0x73, 0x6d, 0x6c, 0xa0, 0x6d, 0x58, 0xb5, 0x3b, 0x9d, 0xde, 0x95, 0x6f, 0x77,
-	0xaf, 0x0d, 0xf0, 0x4d, 0x5d, 0x21, 0x75, 0x58, 0x1e, 0xb8, 0xa7, 0xce, 0x89, 0xed, 0x19, 0x1b,
-	0xd9, 0xe2, 0xdc, 0x1e, 0x3a, 0x57, 0x76, 0x86, 0x68, 0x43, 0xfd, 0x51, 0xf3, 0xb3, 0xd8, 0xa9,
-	0x73, 0x66, 0x5f, 0x76, 0x86, 0xc6, 0x06, 0xda, 0x82, 0x15, 0xb7, 0x3f, 0xb4, 0x8f, 0x3b, 0xce,
-	0xc0, 0x00, 0xa8, 0x02, 0xb5, 0x6e, 0xaf, 0xeb, 0x18, 0x85, 0x63, 0xeb, 0xdf, 0xe5, 0x3e, 0xf8,
-	0x6f, 0xb9, 0x0f, 0xde, 0x2c, 0xf7, 0xc1, 0x1f, 0xf5, 0xbc, 0x02, 0xca, 0xe4, 0x23, 0xb2, 0xe2,
-	0x2d, 0x18, 0x95, 0xe4, 0xcf, 0xff, 0xf0, 0x7d, 0x00, 0x00, 0x00, 0xff, 0xff, 0x0b, 0x72, 0x22,
-	0x36, 0xab, 0x06, 0x00, 0x00,
+	// 938 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0x4f, 0x73, 0xdb, 0x44,
+	0x14, 0xcf, 0xda, 0x8a, 0x1d, 0x3f, 0x25, 0xa9, 0xb2, 0xa4, 0x83, 0xc9, 0x21, 0x71, 0xc5, 0x0c,
+	0x35, 0xff, 0xe4, 0xc6, 0x19, 0x86, 0x16, 0x2e, 0x38, 0xad, 0xdb, 0x71, 0x51, 0x62, 0x8f, 0x24,
+	0x13, 0xc2, 0x45, 0xb3, 0x96, 0xd7, 0xf6, 0x4e, 0x55, 0xad, 0x46, 0x5a, 0x3b, 0xf8, 0xfb, 0x70,
+	0xe4, 0x43, 0x70, 0xe4, 0xc8, 0x8d, 0x2b, 0x13, 0x0e, 0x7c, 0x04, 0xae, 0x8c, 0x56, 0xdb, 0xda,
+	0xe9, 0xb8, 0xa6, 0xb9, 0xf4, 0xb6, 0xef, 0xcf, 0xef, 0xb7, 0x6f, 0x7f, 0xbb, 0xef, 0x2d, 0xdc,
+	0x8b, 0xa8, 0xb8, 0xe2, 0xc9, 0x0b, 0x16, 0x8d, 0x1b, 0xb3, 0x63, 0x12, 0xc6, 0x13, 0x72, 0xd2,
+	0x48, 0xd9, 0x90, 0x06, 0x24, 0xb1, 0xe2, 0x84, 0x0b, 0x8e, 0x3f, 0x62, 0xa9, 0x60, 0xdc, 0x5a,
+	0x24, 0x5a, 0xaf, 0x12, 0x0f, 0x8e, 0xc6, 0x9c, 0x8f, 0x43, 0xda, 0x20, 0x31, 0x6b, 0x8c, 0x18,
+	0x0d, 0x87, 0xfe, 0x80, 0x4e, 0xc8, 0x8c, 0x71, 0x85, 0x3d, 0x58, 0x49, 0x3f, 0x26, 0x82, 0x5e,
+	0x91, 0xb9, 0x4a, 0xf9, 0x74, 0x55, 0xca, 0x8c, 0x25, 0x62, 0x4a, 0x42, 0x3f, 0xa5, 0xc9, 0x8c,
+	0x05, 0x34, 0x4f, 0x35, 0xff, 0x2d, 0x40, 0xd9, 0xcd, 0x6b, 0xc3, 0x3f, 0xc2, 0x5e, 0x86, 0x0a,
+	0x39, 0x19, 0xfa, 0x29, 0x0d, 0x69, 0x20, 0x78, 0x52, 0x45, 0x35, 0x54, 0xd7, 0x9b, 0x9f, 0x5b,
+	0x6f, 0xad, 0xd8, 0xba, 0x50, 0x18, 0x57, 0x41, 0x1c, 0xe3, 0xea, 0x0d, 0x0f, 0xee, 0x40, 0x99,
+	0x45, 0xe3, 0x84, 0xa6, 0x69, 0xb5, 0x50, 0x2b, 0xd6, 0xf5, 0x66, 0x63, 0x0d, 0x5f, 0x27, 0x8b,
+	0x74, 0xf2, 0x74, 0x9b, 0xa5, 0x82, 0x46, 0x34, 0x71, 0x5e, 0xe1, 0xf1, 0x53, 0x28, 0xd1, 0x9c,
+	0xa9, 0x28, 0x99, 0xac, 0xff, 0x63, 0x6a, 0xdf, 0x24, 0x52, 0x68, 0x3c, 0x81, 0x0f, 0xf9, 0x54,
+	0x0c, 0xf8, 0x34, 0x1a, 0xfa, 0x22, 0x21, 0xa3, 0x11, 0x0b, 0xfc, 0x98, 0x87, 0x2c, 0x98, 0x57,
+	0x35, 0x79, 0xe4, 0x07, 0x6b, 0x88, 0xbb, 0x0a, 0xe9, 0xe5, 0xc0, 0x9e, 0xc4, 0x39, 0x77, 0xf9,
+	0x2a, 0xf7, 0x73, 0x6d, 0x6b, 0xd3, 0x28, 0x3d, 0xd7, 0xb6, 0x4a, 0x46, 0xd9, 0xa9, 0x84, 0x3c,
+	0x20, 0xe1, 0x84, 0xa7, 0xc2, 0xfc, 0xad, 0x00, 0xfb, 0xab, 0x8e, 0x8a, 0x1f, 0x81, 0x16, 0xf3,
+	0x44, 0x28, 0xe5, 0x8f, 0xd6, 0x94, 0xd1, 0xe3, 0x89, 0x38, 0xd5, 0xae, 0x5b, 0xa8, 0xe0, 0x48,
+	0x08, 0xc6, 0xa0, 0x0d, 0x58, 0x34, 0xac, 0x16, 0x6a, 0xa8, 0x5e, 0x71, 0xe4, 0x1a, 0x77, 0x60,
+	0x3b, 0x20, 0xb1, 0x98, 0x26, 0xd4, 0x7f, 0xc9, 0x87, 0xb4, 0x5a, 0xac, 0xa1, 0xfa, 0x6e, 0xf3,
+	0x93, 0x35, 0xb4, 0x8f, 0xf3, 0xf4, 0x33, 0x3e, 0xa4, 0x8e, 0x1e, 0x2c, 0x0c, 0xdc, 0x00, 0x63,
+	0x48, 0x47, 0x64, 0x1a, 0x0a, 0x9f, 0x46, 0xc3, 0x98, 0xb3, 0x48, 0x48, 0xb1, 0x2a, 0xaa, 0x88,
+	0x3b, 0x2a, 0xda, 0x56, 0x41, 0xfc, 0x2d, 0x68, 0x72, 0xcf, 0xb2, 0x3c, 0xca, 0xfd, 0x35, 0x7b,
+	0xba, 0x34, 0x98, 0x26, 0x4c, 0xcc, 0xe5, 0xa6, 0x12, 0x74, 0x43, 0xb7, 0xfd, 0xd7, 0xba, 0xf9,
+	0x41, 0xc8, 0x68, 0x24, 0x7c, 0x11, 0xa6, 0xe6, 0xaf, 0x08, 0xb6, 0x97, 0x81, 0xf8, 0x3b, 0xd0,
+	0xc4, 0x3c, 0xa6, 0xf2, 0xfc, 0xbb, 0xcd, 0x2f, 0xde, 0x71, 0x3f, 0xcb, 0x9b, 0xc7, 0xd4, 0x91,
+	0x48, 0xfc, 0x10, 0x8a, 0x22, 0x4c, 0xa5, 0x48, 0xfa, 0x5a, 0x91, 0x3c, 0xdb, 0x75, 0xa9, 0x10,
+	0x2c, 0x1a, 0xa7, 0x4e, 0x06, 0x31, 0x6b, 0xa0, 0x65, 0x3c, 0x58, 0x87, 0xf2, 0x93, 0xf6, 0xd3,
+	0x56, 0xdf, 0xf6, 0x8c, 0x8d, 0xcc, 0x78, 0xd6, 0xf2, 0xda, 0x17, 0xad, 0x4b, 0x03, 0x99, 0x7f,
+	0x17, 0x40, 0x5f, 0x82, 0xe1, 0x53, 0xa5, 0x4e, 0x5e, 0xad, 0xf5, 0x6e, 0x9b, 0x65, 0xeb, 0x97,
+	0xaf, 0x45, 0xc2, 0x5f, 0x02, 0xce, 0x1a, 0x9a, 0x26, 0x7e, 0x40, 0x13, 0xc1, 0x46, 0x2c, 0x20,
+	0x22, 0xbf, 0xe3, 0x8a, 0xb3, 0x97, 0x47, 0x1e, 0x2f, 0x02, 0xf8, 0x08, 0xf4, 0x38, 0x61, 0x33,
+	0x22, 0xa8, 0xff, 0x82, 0xe6, 0x2f, 0xbd, 0xe2, 0x80, 0x72, 0x7d, 0x4f, 0xe7, 0xf8, 0x3e, 0xdc,
+	0x09, 0xc8, 0x32, 0x57, 0x5a, 0xdd, 0x94, 0x49, 0xbb, 0x01, 0x59, 0x22, 0x4a, 0xf1, 0xc7, 0xb0,
+	0x13, 0xb0, 0x78, 0x42, 0x13, 0x3f, 0x9d, 0xb2, 0x2c, 0xad, 0x52, 0x2b, 0xd6, 0x2b, 0xce, 0x76,
+	0xee, 0x74, 0xa5, 0xcf, 0xbc, 0x07, 0x65, 0x55, 0x2e, 0x06, 0x28, 0xb9, 0x9d, 0xb3, 0x9e, 0xdd,
+	0x36, 0x36, 0xb2, 0xf5, 0x59, 0xdf, 0xeb, 0xb7, 0x6c, 0x03, 0x99, 0x5d, 0xa9, 0x49, 0x2f, 0x1b,
+	0x46, 0x01, 0x0f, 0xf1, 0x36, 0x6c, 0x79, 0xb6, 0xeb, 0xb7, 0xfa, 0x5e, 0x37, 0x97, 0xcf, 0xb3,
+	0xdd, 0x1f, 0x8e, 0xfd, 0x07, 0x06, 0x5a, 0x18, 0xc7, 0x46, 0x61, 0x61, 0x34, 0x8d, 0xe2, 0xc2,
+	0x38, 0x31, 0x34, 0xf3, 0x1f, 0x04, 0x1f, 0xac, 0x68, 0x7c, 0x7c, 0x72, 0xab, 0xb6, 0x7a, 0x3f,
+	0x0d, 0x75, 0x00, 0x9b, 0xd9, 0x9b, 0x4e, 0xab, 0x5a, 0x26, 0x9e, 0xea, 0xa2, 0xdc, 0xf5, 0xb6,
+	0xe7, 0xaf, 0x6e, 0x3b, 0x7b, 0x71, 0xbf, 0x20, 0x30, 0xde, 0x1c, 0xbe, 0xb8, 0x0f, 0xa5, 0x90,
+	0x0c, 0x68, 0x98, 0x56, 0x91, 0x9c, 0x8f, 0x5f, 0xdf, 0x62, 0x72, 0x5b, 0xb6, 0x44, 0xb6, 0x23,
+	0x91, 0xcc, 0x55, 0x31, 0x8a, 0xec, 0xe0, 0x11, 0xe8, 0x4b, 0x41, 0x6c, 0x40, 0x31, 0x7b, 0x3f,
+	0x48, 0xca, 0x92, 0x2d, 0xf1, 0x3e, 0x6c, 0xce, 0x48, 0x38, 0xa5, 0x4a, 0xaa, 0xdc, 0xf8, 0xa6,
+	0xf0, 0x10, 0x99, 0x7f, 0x22, 0xb8, 0xbb, 0x72, 0x60, 0xe2, 0x8e, 0x6a, 0x00, 0x24, 0x15, 0xfc,
+	0xea, 0xb6, 0x03, 0xd7, 0x5a, 0x0c, 0x8b, 0xec, 0x52, 0xf2, 0xc1, 0xee, 0xc7, 0x09, 0xff, 0x79,
+	0x2e, 0xab, 0x58, 0xdf, 0xc0, 0x4f, 0x68, 0x2a, 0x58, 0x44, 0x04, 0xe3, 0x91, 0xa3, 0xe7, 0xd8,
+	0x5e, 0x06, 0x35, 0xeb, 0xa0, 0xc9, 0xcb, 0xd9, 0x83, 0x1d, 0xa7, 0xfd, 0xac, 0xe3, 0x7a, 0xce,
+	0xa5, 0xdf, 0x3d, 0xb7, 0x2f, 0x8d, 0x0d, 0xbc, 0x03, 0x95, 0x96, 0x6d, 0x77, 0x2f, 0xfc, 0xd6,
+	0xf9, 0xa5, 0x81, 0x3e, 0x6b, 0x82, 0xbe, 0x74, 0xb5, 0x37, 0x3b, 0x7f, 0x1b, 0xb6, 0x3a, 0x3d,
+	0xaf, 0x75, 0x6a, 0xb7, 0x5d, 0x03, 0xe1, 0x2d, 0xd0, 0xce, 0xbb, 0xe7, 0x6d, 0xa3, 0x70, 0x6a,
+	0xfd, 0x7e, 0x7d, 0x88, 0xfe, 0xb8, 0x3e, 0x44, 0x7f, 0x5d, 0x1f, 0xa2, 0x9f, 0x6a, 0x79, 0x7d,
+	0x8c, 0xcb, 0xff, 0x7e, 0xc5, 0xb7, 0x3d, 0x28, 0xc9, 0x7f, 0xfa, 0xe4, 0xbf, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0xab, 0x07, 0x78, 0xa0, 0x56, 0x08, 0x00, 0x00,
 }
 
 func (m *Sidecar) Marshal() (dAtA []byte, err error) {
@@ -1146,24 +1360,17 @@ func (m *IstioIngressListener) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i -= len(m.XXX_unrecognized)
 		copy(dAtA[i:], m.XXX_unrecognized)
 	}
-	if len(m.PrivateKey) > 0 {
-		i -= len(m.PrivateKey)
-		copy(dAtA[i:], m.PrivateKey)
-		i = encodeVarintSidecar(dAtA, i, uint64(len(m.PrivateKey)))
+	if m.Mode != nil {
+		{
+			size, err := m.Mode.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSidecar(dAtA, i, uint64(size))
+		}
 		i--
-		dAtA[i] = 0x4a
-	}
-	if len(m.ServerCertificate) > 0 {
-		i -= len(m.ServerCertificate)
-		copy(dAtA[i:], m.ServerCertificate)
-		i = encodeVarintSidecar(dAtA, i, uint64(len(m.ServerCertificate)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if m.Mode != 0 {
-		i = encodeVarintSidecar(dAtA, i, uint64(m.Mode))
-		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x3a
 	}
 	if len(m.DefaultEndpoint) > 0 {
 		i -= len(m.DefaultEndpoint)
@@ -1195,6 +1402,112 @@ func (m *IstioIngressListener) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SecurityMode) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SecurityMode) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SecurityMode) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if m.Tls != nil {
+		{
+			size, err := m.Tls.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintSidecar(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Type != 0 {
+		i = encodeVarintSidecar(dAtA, i, uint64(m.Type))
+		i--
+		dAtA[i] = 0x10
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TLSSettings) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TLSSettings) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TLSSettings) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.XXX_unrecognized != nil {
+		i -= len(m.XXX_unrecognized)
+		copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	if len(m.CipherSuites) > 0 {
+		for iNdEx := len(m.CipherSuites) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.CipherSuites[iNdEx])
+			copy(dAtA[i:], m.CipherSuites[iNdEx])
+			i = encodeVarintSidecar(dAtA, i, uint64(len(m.CipherSuites[iNdEx])))
+			i--
+			dAtA[i] = 0x4a
+		}
+	}
+	if len(m.CaCertificates) > 0 {
+		i -= len(m.CaCertificates)
+		copy(dAtA[i:], m.CaCertificates)
+		i = encodeVarintSidecar(dAtA, i, uint64(len(m.CaCertificates)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.PrivateKey) > 0 {
+		i -= len(m.PrivateKey)
+		copy(dAtA[i:], m.PrivateKey)
+		i = encodeVarintSidecar(dAtA, i, uint64(len(m.PrivateKey)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ServerCertificate) > 0 {
+		i -= len(m.ServerCertificate)
+		copy(dAtA[i:], m.ServerCertificate)
+		i = encodeVarintSidecar(dAtA, i, uint64(len(m.ServerCertificate)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Mode != 0 {
+		i = encodeVarintSidecar(dAtA, i, uint64(m.Mode))
+		i--
+		dAtA[i] = 0x10
 	}
 	return len(dAtA) - i, nil
 }
@@ -1413,6 +1726,41 @@ func (m *IstioIngressListener) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovSidecar(uint64(l))
 	}
+	if m.Mode != nil {
+		l = m.Mode.Size()
+		n += 1 + l + sovSidecar(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *SecurityMode) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Type != 0 {
+		n += 1 + sovSidecar(uint64(m.Type))
+	}
+	if m.Tls != nil {
+		l = m.Tls.Size()
+		n += 1 + l + sovSidecar(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *TLSSettings) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	if m.Mode != 0 {
 		n += 1 + sovSidecar(uint64(m.Mode))
 	}
@@ -1423,6 +1771,16 @@ func (m *IstioIngressListener) Size() (n int) {
 	l = len(m.PrivateKey)
 	if l > 0 {
 		n += 1 + l + sovSidecar(uint64(l))
+	}
+	l = len(m.CaCertificates)
+	if l > 0 {
+		n += 1 + l + sovSidecar(uint64(l))
+	}
+	if len(m.CipherSuites) > 0 {
+		for _, s := range m.CipherSuites {
+			l = len(s)
+			n += 1 + l + sovSidecar(uint64(l))
+		}
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -1844,6 +2202,199 @@ func (m *IstioIngressListener) Unmarshal(dAtA []byte) error {
 			m.DefaultEndpoint = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mode", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSidecar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Mode == nil {
+				m.Mode = &SecurityMode{}
+			}
+			if err := m.Mode.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSidecar(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SecurityMode) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSidecar
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SecurityMode: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SecurityMode: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSidecar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= SecurityMode_Type(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Tls", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSidecar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Tls == nil {
+				m.Tls = &TLSSettings{}
+			}
+			if err := m.Tls.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipSidecar(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TLSSettings) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowSidecar
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TLSSettings: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TLSSettings: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Mode", wireType)
 			}
@@ -1857,12 +2408,12 @@ func (m *IstioIngressListener) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Mode |= Mode(b&0x7F) << shift
+				m.Mode |= TLSSettings_TLSmode(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 8:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ServerCertificate", wireType)
 			}
@@ -1894,7 +2445,7 @@ func (m *IstioIngressListener) Unmarshal(dAtA []byte) error {
 			}
 			m.ServerCertificate = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 9:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PrivateKey", wireType)
 			}
@@ -1925,6 +2476,70 @@ func (m *IstioIngressListener) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.PrivateKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CaCertificates", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSidecar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CaCertificates = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CipherSuites", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowSidecar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthSidecar
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CipherSuites = append(m.CipherSuites, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
